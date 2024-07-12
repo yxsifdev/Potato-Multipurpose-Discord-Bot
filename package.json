@@ -1,0 +1,25 @@
+{
+  "name": "potato-bot",
+  "version": "1.0.0",
+  "main": "src/bot.js",
+  "scripts": {
+    "test": "node .",
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "yxsifdev",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@discordjs/rest": "^2.3.0",
+    "chalk": "^4.1.2",
+    "colors": "^1.4.0",
+    "discord-api-types": "^0.37.92",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
