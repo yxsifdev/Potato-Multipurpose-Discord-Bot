@@ -4,9 +4,9 @@ module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
         if (interaction.isChatInputCommand()) {
-            const { commands } = client;
+            const { slashCommands } = client;
             const { commandName } = interaction;
-            const command = commands.get(commandName);
+            const command = slashCommands.get(commandName);
             if (!command) return;
 
             try {
@@ -85,9 +85,9 @@ module.exports = {
                 console.error(error)
             }
         } else if (interaction.isContextMenuCommand()) {
-            const { commands } = client;
+            const { slashCommands } = client;
             const { commandName } = interaction;
-            const contextCommand = commands.get(commandName);
+            const contextCommand = slashCommands.get(commandName);
             if (!contextCommand) return;
 
             try {
@@ -97,9 +97,9 @@ module.exports = {
 
             }
         } else if (interaction.type == InteractionType.ApplicationCommandAutocomplete) {
-            const { commands } = client;
+            const { slashCommands } = client;
             const { commandName } = interaction;
-            const command = commands.get(commandName);
+            const command = slashCommands.get(commandName);
             if (!command) return;
 
             try {

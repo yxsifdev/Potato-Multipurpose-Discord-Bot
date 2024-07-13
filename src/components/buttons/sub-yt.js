@@ -6,4 +6,3 @@ module.exports = {
         await interaction.reply({ content: "Interacción con un botón" })
     }
 }
-
