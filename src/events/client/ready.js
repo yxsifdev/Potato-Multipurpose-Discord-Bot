@@ -12,6 +12,5 @@ module.exports = {
                 url: "https://www.twitch.tv/yxsifdev"
             }]
         });
-        console.log(`${client.user.tag} ha iniciado sesión y está en línea`.brightGreen)
     }
 }

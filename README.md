@@ -30,6 +30,9 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("cmd-name")
     .setDescription("Return cmd-name"),
+  owner: false,
+  botPermissions: [],
+  memberPermissions: [],
   async execute(interaction, client) {},
 };
 ```
