@@ -17,7 +17,7 @@
     "discord-api-types": "^0.37.92",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "mongoose": "^8.5.0"
+    "mongoose": "^8.5.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

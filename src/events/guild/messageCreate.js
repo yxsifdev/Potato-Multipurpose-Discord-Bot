@@ -12,29 +12,21 @@ module.exports = {
         const commandName = args.shift().toLowerCase();
         const command = client.prefixCommands.get(commandName) || client.prefixCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-        if (!command) return;
-
         if (command) {
-            if (command.owner && !config.owners.includes(message.author.id)) {
-                return message.reply({ content: `${emj.check} No puedes ejecutar este comando.` });
-            }
+            if (command.owner && !config.owners.includes(message.author.id)) return;
             if (command.botPermissions) {
-                if (!message.guild.members.me.permissions.has(command.botPermissions)) {
-                    return message.reply({ content: `${emj.deny} El bot no tiene los permisos necesarios.` });
-                }
+                if (!message.guild.members.me.permissions.has(command.botPermissions)) return;
             }
             if (command.memberPermissions) {
-                if (!message.member.permissions.has(command.memberPermissions)) {
-                    return message.reply({ content: `${emj.deny} No tienes los permisos necesarios.` });
-                }
+                if (!message.member.permissions.has(command.memberPermissions)) return;
             }
-        }
 
-        try {
-            await command.execute(message, args, client);
-        } catch (error) {
-            console.error(error);
-            await message.reply('Algo salió mal al ejecutar este comando.');
+            try {
+                await command.execute(message, args, client);
+            } catch (error) {
+                console.error(error);
+                await message.reply(`Algo salió mal al ejecutar este comando.`);
+            }
         }
     }
 }

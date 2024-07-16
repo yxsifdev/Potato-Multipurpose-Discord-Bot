@@ -16,7 +16,7 @@ module.exports = {
             await interaction.reply({ content: `¡Se ha creado la base de datos para ${guildProfile.guildId}!`, ephemeral: true });
             console.log(guildProfile);
         } else {
-            await interaction.reply({ content: `Ya existe datos del servidor`, ephemeral: true });
+            await interaction.reply({ content: `Ya existe datos del servidor\n\`\`\`yml\n${guildProfile}\`\`\``, ephemeral: true });
         }
     }
 }

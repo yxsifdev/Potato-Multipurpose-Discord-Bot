@@ -1,0 +1,24 @@
+module.exports = (client) => {
+    client.on("interactionCreate", async (interaction) => {
+        if (!interaction.isButton()) return;
+
+        const customId = interaction.customId;
+
+        // Manejar botones con el prefijo sanciones_
+        if (customId.startsWith("sancionban_")) {
+            const userId = customId.split('_')[1]; // Extraer el ID del usuario
+            console.log(userId)
+
+            if (!userId) {
+                return interaction.reply({ content: "Error: No se pudo obtener el ID del usuario.", ephemeral: true });
+            }
+
+            const user = await interaction.guild.members.fetch(userId);
+            if (!user) {
+                return interaction.reply({ content: "Error: Usuario no encontrado.", ephemeral: true });
+            }
+
+            await interaction.reply({ content: `Interacción con el botón de sanción/ban para el usuario <@${userId}>`, ephemeral: true });
+        }
+    });
+};

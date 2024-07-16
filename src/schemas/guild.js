@@ -4,4 +4,4 @@ const guildSchema = new Schema({
     guildId: { type: String, required: true },
 });
 
-module.exports = model("Guild", guildSchema, "guilds");
+module.exports = model("guilds", guildSchema);
