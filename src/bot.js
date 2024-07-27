@@ -9,6 +9,7 @@ const {
   GatewayIntentBits,
 } = require("discord.js");
 const fs = require("fs");
+const path = require("path");
 
 const client = new Client({
   intents: 53608447,
@@ -17,24 +18,25 @@ const client = new Client({
     repliedUser: false,
   },
 });
+
 client.prefixCommands = new Collection();
 client.slashCommands = new Collection();
+client.slashCommandArray = [];
 client.contextCommands = new Collection();
+client.contextCommandArray = [];
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.modals = new Collection();
-client.slashCommandArray = [];
-client.contextCommandArray = [];
 client.color = "#facc15";
 client.prefix = prefix;
 
-const functionFolders = fs.readdirSync(`./src/utils`);
+const functionFolders = fs.readdirSync(path.join(__dirname, "utils"));
 for (const folder of functionFolders) {
   const functionFiles = fs
-    .readdirSync(`./src/utils/${folder}`)
+    .readdirSync(path.join(__dirname, "utils", folder))
     .filter((file) => file.endsWith(".js"));
   for (const file of functionFiles) {
-    require(`./utils/${folder}/${file}`)(client);
+    require(path.join(__dirname, "utils", folder, file))(client);
   }
 }
 

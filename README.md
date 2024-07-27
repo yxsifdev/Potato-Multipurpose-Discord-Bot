@@ -35,3 +35,17 @@ module.exports = {
   async execute(interaction, client) {},
 };
 ```
+
+## Estructura para crear componentes:
+
+```js
+const emj = require("../../botconfig/emojis.json");
+const emb = require("../../botconfig/embed.json");
+
+module.exports = {
+  data: {
+    name: "component-name",
+  },
+  async execute(interaction, client) {},
+};
+```

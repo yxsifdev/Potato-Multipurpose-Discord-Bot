@@ -1,4 +1,5 @@
 const { ActivityType } = require("discord.js");
+const { startUpdateSystem } = require("../../functions/updateTreeStats");
 require("colors");
 
 module.exports = {
@@ -14,5 +15,6 @@ module.exports = {
         },
       ],
     });
+    startUpdateSystem(client);
   },
 };

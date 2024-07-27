@@ -1,18 +1,20 @@
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const fs = require("fs");
+const path = require("path");
 require("colors");
 
 module.exports = (client) => {
   client.handleSlashCommands = async () => {
     // Handling Slash Commands
-    const slashCommandFolders = fs.readdirSync("./src/slashCommands");
+    const slashCommandsPath = path.join(__dirname, "../../slashCommands");
+    const slashCommandFolders = fs.readdirSync(slashCommandsPath);
     const { slashCommands, slashCommandArray } = client;
 
     let totalSlashCommands = 0;
 
     for (const folder of slashCommandFolders) {
-      const folderPath = `./src/slashCommands/${folder}`;
+      const folderPath = path.join(slashCommandsPath, folder);
       if (fs.lstatSync(folderPath).isDirectory()) {
         const subcommandFiles = fs
           .readdirSync(folderPath)
@@ -39,7 +41,7 @@ module.exports = (client) => {
         };
 
         for (const file of subcommandFiles) {
-          const subcommand = require(`../../slashCommands/${folder}/${file}`);
+          const subcommand = require(path.join(folderPath, file));
           mainCommand.data.options.push({
             type: 1, // 1 is for subcommand type
             name: subcommand.data.name,
@@ -53,7 +55,7 @@ module.exports = (client) => {
         slashCommands.set(mainCommand.data.name, mainCommand);
         slashCommandArray.push(mainCommand.data);
       } else if (folder.endsWith(".js")) {
-        const command = require(`../../slashCommands/${folder}`);
+        const command = require(path.join(slashCommandsPath, folder));
         slashCommands.set(command.data.name, command);
         slashCommandArray.push(command.data.toJSON());
         totalSlashCommands++;
@@ -61,22 +63,22 @@ module.exports = (client) => {
     }
 
     // Handling Context Menu Commands
+    const contextCommandsPath = path.join(__dirname, "../../contextCommands");
     const contextCommandFiles = fs
-      .readdirSync("./src/contextCommands")
+      .readdirSync(contextCommandsPath)
       .filter((file) => file.endsWith(".js"));
 
     const { contextCommands, contextCommandArray } = client;
     let totalContextCommands = 0;
 
     for (const file of contextCommandFiles) {
-      const command = require(`../../contextCommands/${file}`);
+      const command = require(path.join(contextCommandsPath, file));
       contextCommands.set(command.data.name, command);
       contextCommandArray.push(command.data.toJSON());
       totalContextCommands++;
     }
 
     const clientId = "1261018820416372807";
-    // const guildId = "1017083096627171449";
     const rest = new REST({ version: "10" }).setToken(process.env.token);
 
     try {
@@ -86,9 +88,6 @@ module.exports = (client) => {
       await rest.put(Routes.applicationCommands(clientId), {
         body: [...client.slashCommandArray, ...client.contextCommandArray],
       });
-      // await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-      //   body: [],
-      // });
       console.log(
         "Comandos de aplicación (/) recargados correctamente".brightBlue
       );

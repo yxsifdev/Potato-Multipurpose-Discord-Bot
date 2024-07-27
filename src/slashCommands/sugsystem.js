@@ -26,7 +26,7 @@ module.exports = {
     )
     .addSubcommand((s) =>
       s
-        .setName("admin")
+        .setName("manage")
         .setDescription("Administra las sugerencias enviadas.")
         .addStringOption((o) =>
           o
@@ -36,7 +36,7 @@ module.exports = {
         )
         .addStringOption((o) =>
           o
-            .setName("accion")
+            .setName("action")
             .setDescription("Realiza una acción")
             .addChoices(
               { name: "Aprobar", value: "aprobar" },
@@ -75,7 +75,7 @@ module.exports = {
           if (schema.sugSystem.channel === channel.id) {
             resEmbed
               .setDescription(
-                `${emj.cross} El sistema de sugerencias ya está establecido en <#${channel.id}>.`
+                `${emj.deny} El sistema de sugerencias ya está establecido en <#${channel.id}>.`
               )
               .setColor(emb.deny);
 
@@ -96,14 +96,14 @@ module.exports = {
           await interaction.reply({ embeds: [resEmbed], ephemeral: true });
         }
         break;
-      case "admin":
+      case "manage":
         const messageId = options.getString("id");
-        const action = options.getString("accion");
+        const action = options.getString("action");
         schema = await suggestionSchema.findOne({ guildId: guildId });
         if (!schema) {
           resEmbed
             .setDescription(
-              `${emj.cross} No se ha configurado el sistema de sugerencias.`
+              `${emj.deny} No se ha configurado el sistema de sugerencias.`
             )
             .setColor(emb.deny);
 
