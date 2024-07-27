@@ -5,7 +5,6 @@ const ee = require("../../botconfig/embed.json")
 module.exports = {
     name: 'say',
     description: 'El bot replicará mensajes cortos.',
-    category: "tools",
     usage: "p!say <message>",
     owner: false,
     botPermissions: [],

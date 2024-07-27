@@ -6,7 +6,6 @@ const { EmbedBuilder } = require("discord.js");
 module.exports = {
     name: 'warn',
     description: 'Añadir una advertencia a un usuario.',
-    category: "mod",
     usage: "p!warn <usuario> <razón>",
     aliases: ["w"],
     owner: false,

@@ -5,8 +5,8 @@ const ee = require("../../botconfig/embed.json");
 module.exports = {
     name: 'modpanel',
     description: 'Muestra un panel para sancionar a un usuario',
-    category: "mod",
     usage: "p!modpanel <user-id>",
+    aliases: [],
     owner: false,
     memberPermissions: ["Administrator"],
     botPermissions: ["Administrator"],

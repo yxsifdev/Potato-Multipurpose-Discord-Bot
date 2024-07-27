@@ -76,16 +76,19 @@ module.exports = (client) => {
     }
 
     const clientId = "1261018820416372807";
-    const guildId = "1017083096627171449";
+    // const guildId = "1017083096627171449";
     const rest = new REST({ version: "10" }).setToken(process.env.token);
 
     try {
       console.log(
         "Comenzó a actualizar los comandos de la aplicación (/)".brightYellow
       );
-      await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+      await rest.put(Routes.applicationCommands(clientId), {
         body: [...client.slashCommandArray, ...client.contextCommandArray],
       });
+      // await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+      //   body: [],
+      // });
       console.log(
         "Comandos de aplicación (/) recargados correctamente".brightBlue
       );

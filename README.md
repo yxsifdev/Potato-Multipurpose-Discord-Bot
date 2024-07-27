@@ -9,7 +9,6 @@ const emb = require("../../botconfig/embed.json");
 module.exports = {
   name: "cmd-name",
   description: "cmd-name",
-  category: "",
   usage: "p!cmd-name",
   aliases: [],
   owner: false,
@@ -31,8 +30,8 @@ module.exports = {
     .setName("cmd-name")
     .setDescription("Return cmd-name"),
   owner: false,
-  botPermissions: [],
   memberPermissions: [],
+  botPermissions: [],
   async execute(interaction, client) {},
 };
 ```

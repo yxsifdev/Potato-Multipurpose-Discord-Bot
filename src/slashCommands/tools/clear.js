@@ -25,6 +25,11 @@ module.exports = {
     const { channel, options } = interaction;
     const cantidad = options.getNumber("cantidad");
     const usuario = options.getUser("usuario");
+    if (cantidad > 99)
+      return interaction.reply({
+        content: `${emj.deny} No puedes eliminar mas de 99 mensajes`,
+        ephemeral: true,
+      });
 
     const messages = await channel.messages.fetch({ limit: cantidad + 1 });
 
@@ -61,6 +66,6 @@ module.exports = {
       );
     }
 
-    interaction.reply({ embeds: [res], ephemeral: true });
+    await interaction.reply({ embeds: [res], ephemeral: true });
   },
 };

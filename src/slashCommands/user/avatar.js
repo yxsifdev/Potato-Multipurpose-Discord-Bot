@@ -15,6 +15,9 @@ module.exports = {
         .setDescription("Usuario a ver su avatar")
         .setRequired(false)
     ),
+  owner: false,
+  botPermissions: ["ManageMessage"],
+  memberPermissions: ["ManageMessage"],
   async execute(interaction, client) {
     const { user, guild, options } = interaction;
     const usuario = options.getUser("usuario") || user;

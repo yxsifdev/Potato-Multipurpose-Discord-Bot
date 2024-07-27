@@ -6,7 +6,6 @@ const emb = require('../../botconfig/embed.json');
 module.exports = {
     name: 'case',
     description: 'Muestra la información de un caso específico.',
-    category: "mod",
     usage: "p!case <id-caso>",
     aliases: [],
     owner: false,

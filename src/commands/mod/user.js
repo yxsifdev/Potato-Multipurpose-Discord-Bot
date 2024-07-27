@@ -5,8 +5,12 @@ const emb = require('../../botconfig/embed.json');
 module.exports = {
     name: 'user',
     description: 'Muestra información de un usuario.',
-    category: 'info',
+    category: 'mod',
     usage: 'p!user <user-id>',
+    aliases: [],
+    owner: false,
+    memberPermissions: [],
+    botPermissions: [],
     async execute(message, args, client) {
         if (args.length === 0) {
             const embed = new EmbedBuilder()

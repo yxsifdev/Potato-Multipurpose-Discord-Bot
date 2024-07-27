@@ -1,4 +1,5 @@
 const { InteractionType } = require("discord.js");
+const config = require("../../botconfig/config.json");
 
 module.exports = {
   name: "interactionCreate",

@@ -5,7 +5,7 @@ module.exports = {
     .setName("ping")
     .setDescription("Muestra la latencia del bot"),
   owner: false,
-  botPermissions: [], 
+  botPermissions: [],
   memberPermissions: [],
   async execute(interaction, client) {
     const apiLatency = client.ws.ping;

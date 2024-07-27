@@ -6,7 +6,6 @@ const emb = require('../../botconfig/embed.json');
 module.exports = {
     name: 'history',
     description: 'Muestra todas las advertencias de un usuario.',
-    category: "mod",
     usage: "p!history <id-usuario>",
     aliases: [],
     owner: false,

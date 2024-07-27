@@ -1,8 +1,7 @@
 module.exports = {
-  name: "ping",
+  name: "lista",
   description: "Muestra la latencia del bot",
-
-  usage: "p!ping",
+  usage: "p!lista",
   aliases: ["latency"],
   owner: false,
   memberPermissions: ["Administrator"],
