@@ -11,7 +11,6 @@ const questions = [
     options: ["Harper Lee", "J.K. Rowling", "Mark Twain", "Ernest Hemingway"],
     answer: "Harper Lee",
   },
-  // Agrega más preguntas aquí
 ];
 
 module.exports = {
