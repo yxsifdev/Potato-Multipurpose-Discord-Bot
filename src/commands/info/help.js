@@ -3,6 +3,8 @@ const {
   ActionRowBuilder,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
@@ -20,6 +22,7 @@ module.exports = {
   botPermissions: [],
   async execute(message, args, client) {
     const categories = {};
+    const COMMANDS_PER_PAGE = 20;
 
     // Función para agregar comandos a las categorías
     const addCommandToCategory = (cmd, type, category) => {
@@ -56,7 +59,6 @@ module.exports = {
         fs.lstatSync(path.join(slashCommandPath, file)).isDirectory()
       );
 
-    // Crear un conjunto con los nombres de las carpetas de comandos slash
     const slashFolderNames = new Set(slashCommandFolders);
 
     client.slashCommands.forEach((cmd) => {
@@ -71,7 +73,6 @@ module.exports = {
       }
 
       if (category !== "Sin categoría") {
-        // Si el comando tiene una categoría, agregar sus subcomandos
         if (
           cmd.data.options &&
           cmd.data.options.some((opt) => opt.type === 1)
@@ -97,7 +98,6 @@ module.exports = {
           );
         }
       } else if (!slashFolderNames.has(cmd.data.name)) {
-        // Solo agregar a "Sin categoría" si el nombre del comando no coincide con una carpeta
         addCommandToCategory(
           {
             name: cmd.data.name,
@@ -115,7 +115,8 @@ module.exports = {
       .setPlaceholder("Selecciona una categoría")
       .addOptions(
         Object.keys(categories).map((category) => {
-          const capitalizedCategory = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+          const capitalizedCategory =
+            category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
           let emoji;
           switch (capitalizedCategory.toLowerCase()) {
             case "mod":
@@ -170,56 +171,50 @@ module.exports = {
         `${emj.check} | **Selecciona una categoría para ver los comandos.**`
       );
 
+    let currentPage = 1;
+    let currentCategory = null;
+
     const msg = await message.reply({
       embeds: [initialEmbed],
       components: [row],
     });
 
-    const filter = (i) =>
-      i.customId === "help_select" && i.user.id === message.author.id;
+    const filter = (i) => i.user.id === message.author.id;
     const collector = msg.createMessageComponentCollector({
       filter,
-      time: 60000,
+      time: 300000,
     });
 
     collector.on("collect", async (i) => {
-      const value = i.values[0];
+      try {
+        if (i.customId === "help_select") {
+          const value = i.values[0];
 
-      if (value === "home") {
-        await i.update({
-          embeds: [initialEmbed],
-          components: [row],
+          if (value === "home") {
+            currentCategory = null;
+            currentPage = 1;
+            await i.update({
+              embeds: [initialEmbed],
+              components: [row],
+            });
+          } else {
+            currentCategory = value;
+            currentPage = 1;
+            await updateCategoryEmbed(i);
+          }
+        } else if (i.customId === "prev_page") {
+          currentPage--;
+          await updateCategoryEmbed(i);
+        } else if (i.customId === "next_page") {
+          currentPage++;
+          await updateCategoryEmbed(i);
+        }
+      } catch (error) {
+        console.error("Error en el collector:", error);
+        await i.reply({
+          content: "Ha ocurrido un error. Por favor, intenta nuevamente.",
+          ephemeral: true,
         });
-      } else {
-        const category = value;
-        const prefixCommands = categories[category]?.prefix || [];
-        const slashCommands = categories[category]?.slash || [];
-
-        const prefixCommandsList = prefixCommands.length
-          ? prefixCommands
-              .map(
-                ({ name, description }) =>
-                  `\`${client.prefix}${name}\`: ${description}`
-              )
-              .join("\n")
-          : "No existen comandos prefix en esta categoría";
-
-        const slashCommandsList = slashCommands.length
-          ? slashCommands
-              .map((cmd) => `\`/${cmd.name}\`: ${cmd.description}`)
-              .join("\n")
-          : "No existen comandos slash en esta categoría";
-
-        const categoryEmbed = resEmbed.setTitle(`Comandos de ${category}:`)
-          .setDescription(`
-            ${emj.check} | **Comandos de Prefijo:**
-            ${prefixCommandsList}
-            
-            ${emj.neutral} | **Comandos Slash:**
-            ${slashCommandsList}
-          `);
-
-        await i.update({ embeds: [categoryEmbed], components: [row] });
       }
     });
 
@@ -232,5 +227,71 @@ module.exports = {
         console.error("Error al eliminar los componentes:", error);
       }
     });
+
+    async function updateCategoryEmbed(i) {
+      const category = currentCategory;
+      const prefixCommands = categories[category]?.prefix || [];
+      const slashCommands = categories[category]?.slash || [];
+
+      const totalCommands = prefixCommands.length + slashCommands.length;
+      const totalPages = Math.ceil(totalCommands / COMMANDS_PER_PAGE);
+
+      currentPage = Math.max(1, Math.min(currentPage, totalPages));
+
+      const startIndex = (currentPage - 1) * COMMANDS_PER_PAGE;
+      const endIndex = startIndex + COMMANDS_PER_PAGE;
+
+      const prefixCommandsList = prefixCommands
+        .slice(startIndex, endIndex)
+        .map(
+          ({ name, description }) =>
+            `\`${client.prefix}${name}\`: ${description}`
+        )
+        .join("\n");
+
+      const slashCommandsList = slashCommands
+        .slice(
+          Math.max(0, startIndex - prefixCommands.length),
+          Math.max(0, endIndex - prefixCommands.length)
+        )
+        .map((cmd) => `\`/${cmd.name}\`: ${cmd.description}`)
+        .join("\n");
+
+      const categoryEmbed = resEmbed
+        .setTitle(`Comandos de ${category}:`)
+        .setDescription(
+          `
+          ${emj.check} | **Comandos de Prefijo:**
+          ${prefixCommandsList || "No hay comandos prefix en esta página"}
+          
+          ${emj.neutral} | **Comandos Slash:**
+          ${slashCommandsList || "No hay comandos slash en esta página"}
+          
+          Página ${currentPage} de ${totalPages}
+        `
+        );
+
+      const prevButton = new ButtonBuilder()
+        .setCustomId("prev_page")
+        .setLabel("Anterior")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(currentPage === 1);
+
+      const nextButton = new ButtonBuilder()
+        .setCustomId("next_page")
+        .setLabel("Siguiente")
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(currentPage === totalPages);
+
+      const navigationRow = new ActionRowBuilder().addComponents(
+        prevButton,
+        nextButton
+      );
+
+      await i.update({
+        embeds: [categoryEmbed],
+        components: [row, navigationRow],
+      });
+    }
   },
 };

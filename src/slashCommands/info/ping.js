@@ -4,6 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("ping")
     .setDescription("Muestra la latencia del bot"),
+  cooldown: 10,
   owner: false,
   botPermissions: [],
   memberPermissions: [],

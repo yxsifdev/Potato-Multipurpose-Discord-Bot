@@ -4,6 +4,7 @@ module.exports = {
 
   usage: "p!ping",
   aliases: ["latency"],
+  cooldown: 3,
   owner: false,
   memberPermissions: ["Administrator"],
   botPermissions: ["Administrator"],

@@ -1,4 +1,5 @@
 const { InteractionType } = require("discord.js");
+const { handleCooldown } = require("../../functions/cooldown");
 const config = require("../../botconfig/config.json");
 
 module.exports = {
@@ -7,19 +8,49 @@ module.exports = {
     if (interaction.isChatInputCommand()) {
       const { slashCommands } = client;
       const { commandName } = interaction;
-      const command = slashCommands.get(commandName);
+      let command, subcommand;
+
+      if (interaction.options.getSubcommand(false)) {
+        const subcommandName = interaction.options.getSubcommand();
+        command = slashCommands.get(commandName);
+        subcommand = slashCommands.get(`${commandName}/${subcommandName}`);
+      } else {
+        command = slashCommands.get(commandName);
+      }
+
       if (!command) return;
 
-      if (command.owner && !config.owners.includes(interaction.user.id)) {
+      const commandToExecute = subcommand || command;
+
+      if (commandToExecute.cooldown) {
+        const cooldownResult = handleCooldown(
+          client,
+          commandName,
+          interaction.user.id,
+          commandToExecute.cooldown
+        );
+        if (cooldownResult.onCooldown) {
+          return interaction.reply({
+            content: cooldownResult.message,
+            ephemeral: true,
+            allowedMentions: { repliedUser: false },
+          });
+        }
+      }
+
+      if (
+        commandToExecute.owner &&
+        !config.owners.includes(interaction.user.id)
+      ) {
         return interaction.reply({
           content: "No tienes permiso para usar este comando.",
           ephemeral: true,
         });
       }
 
-      if (command.botPermissions) {
+      if (commandToExecute.botPermissions) {
         const botMember = interaction.guild.members.me;
-        if (!botMember.permissions.has(command.botPermissions)) {
+        if (!botMember.permissions.has(commandToExecute.botPermissions)) {
           return interaction.reply({
             content:
               "El bot no tiene los permisos necesarios para ejecutar este comando.",
@@ -28,8 +59,12 @@ module.exports = {
         }
       }
 
-      if (command.memberPermissions) {
-        if (!interaction.member.permissions.has(command.memberPermissions)) {
+      if (commandToExecute.memberPermissions) {
+        if (
+          !interaction.member.permissions.has(
+            commandToExecute.memberPermissions
+          )
+        ) {
           return interaction.reply({
             content:
               "No tienes los permisos necesarios para usar este comando.",

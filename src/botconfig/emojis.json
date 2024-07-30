@@ -1,5 +1,21 @@
 {
     "check": "<:check:1264616103674511562>",
     "deny": "<:xmark:1264616117310197771>",
-    "neutral": "<:neutral:1264616473134108764>"
+    "neutral": "<:neutral:1264616473134108764>",
+    "uses": {
+        "alarm": "<a:alarm_clock:1267154443166814219>"
+    },
+    "buttons": {
+        "arrow_back": "<:arrow_back:1267228373059375145>",
+        "arrow_advance": "<:arrow_advance:1267228365224677386>",
+        "trash": "<:trash:1267229302953611284>",
+        "page_list": "<:pagelist:1267230612985614428>",
+        "arrowsshuffle": "<:arrowsshuffle:1267229982237917268>"
+    },
+    "progress_bar": {
+        "leftindicator": "[",
+        "rightindicator": "]",
+        "emptyframe": "⬜",
+        "filledframe": "🟩"
+    }
 }

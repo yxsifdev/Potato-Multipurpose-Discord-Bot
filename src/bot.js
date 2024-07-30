@@ -19,16 +19,23 @@ const client = new Client({
   },
 });
 
+//Commands
 client.prefixCommands = new Collection();
+//SlashCommands
 client.slashCommands = new Collection();
 client.slashCommandArray = [];
+//ContextCommands
 client.contextCommands = new Collection();
 client.contextCommandArray = [];
+//Components
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.modals = new Collection();
+//Settings
 client.color = "#facc15";
 client.prefix = prefix;
+//Others
+client.cooldowns = new Collection();
 
 const functionFolders = fs.readdirSync(path.join(__dirname, "utils"));
 for (const folder of functionFolders) {

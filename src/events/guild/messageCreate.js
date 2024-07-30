@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const { handleCooldown } = require("../../functions/cooldown");
 const config = require("../../botconfig/config.json");
 const ee = require("../../botconfig/embed.json");
 const emj = require("../../botconfig/emojis.json");
@@ -18,6 +19,36 @@ module.exports = {
       );
 
     if (command) {
+      if (command.cooldown) {
+        const cooldownResult = handleCooldown(
+          client,
+          commandName,
+          message.author.id,
+          command.cooldown
+        );
+        if (cooldownResult.onCooldown) {
+          try {
+            const reply = await message.channel.send(cooldownResult.message);
+            setTimeout(() => {
+              reply
+                .delete()
+                .catch((error) =>
+                  console.error(
+                    "Error al eliminar el mensaje de cooldown:",
+                    error
+                  )
+                );
+            }, 5000);
+          } catch (error) {
+            console.error(
+              "Error al enviar o eliminar el mensaje de cooldown:",
+              error
+            );
+          }
+          return;
+        }
+      }
+
       if (command.owner && !config.owners.includes(message.author.id)) return;
       if (command.botPermissions) {
         if (!message.guild.members.me.permissions.has(command.botPermissions))

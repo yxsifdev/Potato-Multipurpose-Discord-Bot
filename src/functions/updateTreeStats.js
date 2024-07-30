@@ -55,7 +55,8 @@ async function updateTreeStats(client) {
       }
     }
   } catch (error) {
-    console.error("Error updating tree stats:", error);
+    // console.error("Error updating tree stats:", error);
+    return;
   }
 }
 

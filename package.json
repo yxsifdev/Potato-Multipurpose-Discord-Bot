@@ -1,5 +1,5 @@
 {
-  "name": "potato-bot",
+  "name": "essentials-bot",
   "version": "1.0.0",
   "main": "src/bot.js",
   "scripts": {
