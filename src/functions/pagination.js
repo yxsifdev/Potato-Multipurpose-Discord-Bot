@@ -141,25 +141,23 @@ async function pagination(context, pages, options = {}) {
             pageNumber < 1 ||
             pageNumber > pages.length
           ) {
-            await modalInteraction
-              .reply({
-                content: "Número de página inválido.",
-                ephemeral: true,
-              })
-              .catch(console.error);
+            await modalInteraction.reply({
+              content: "Número de página inválido.",
+              ephemeral: true,
+            });
             return;
           }
 
           currentPage = pageNumber - 1;
           await updateMessage(modalInteraction);
-          return;
         } catch (error) {
-          console.error(
-            "Error en el manejo del modal de salto de página:",
-            error
-          );
+          // console.error(
+          //   "Error en el manejo del modal de salto de página:",
+          //   error
+          // );
           return;
         }
+        return;
     }
 
     await updateMessage(interaction);
@@ -181,15 +179,23 @@ async function pagination(context, pages, options = {}) {
 
   async function updateMessage(interaction) {
     try {
-      await interaction.update({
-        content: getContent(),
-        embeds: [pages[currentPage]],
-        components: [getButtons()],
-      });
+      if (interaction.replied || interaction.deferred) {
+        await interaction.editReply({
+          content: getContent(),
+          embeds: [pages[currentPage]],
+          components: [getButtons()],
+        });
+      } else {
+        await interaction.update({
+          content: getContent(),
+          embeds: [pages[currentPage]],
+          components: [getButtons()],
+        });
+      }
     } catch (error) {
       console.error("Error al actualizar el mensaje:", error);
       try {
-        await interaction.message.edit({
+        await reply.edit({
           content: getContent(),
           embeds: [pages[currentPage]],
           components: [getButtons()],
@@ -199,13 +205,6 @@ async function pagination(context, pages, options = {}) {
           "No se pudo actualizar el mensaje de paginación:",
           editError
         );
-        await interaction
-          .followUp({
-            content:
-              "Hubo un error al actualizar el mensaje. Por favor, inténtalo de nuevo.",
-            ephemeral: true,
-          })
-          .catch(console.error);
       }
     }
   }

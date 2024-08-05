@@ -1,0 +1,10 @@
+{
+    "user": {
+        "idNotFound": "No se pudo obtener el ID del usuario.",
+        "userNotFound": "Usuario no encontrado."
+    },
+    "button": {
+        "idNotFound": "No se pudo obtener el ID del botón.",
+        "noAction": "No se encontraron acciones para el botón."
+    }
+}
